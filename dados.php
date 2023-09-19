@@ -18,34 +18,34 @@ if (
     $telefone = addslashes($_POST['telefone']);
     $senha = addslashes($_POST['senha']); 
 
-    $email_exists_query = mysqli_query($conexao, "SELECT * FROM conta WHERE email = '$email'");
+    $email_exists_query = mysqli_query($conn, "SELECT * FROM conta WHERE email = '$email'");
     if (mysqli_num_rows($email_exists_query) > 0) {
         echo "Já existe uma conta com este email.";
         exit; // Encerre o script
     }
 
     // Verifique se já existe um registro com o mesmo CPF
-    $cpf_exists_query = mysqli_query($conexao, "SELECT * FROM conta WHERE cpf = '$cpf'");
+    $cpf_exists_query = mysqli_query($conn, "SELECT * FROM conta WHERE cpf = '$cpf'");
     if (mysqli_num_rows($cpf_exists_query) > 0) {
         echo "Já existe uma conta com este CPF.";
         exit; // Encerre o script
     }
 
     // Verifique se já existe um registro com o mesmo telefone
-    $telefone_exists_query = mysqli_query($conexao, "SELECT * FROM conta WHERE telefone = '$telefone'");
+    $telefone_exists_query = mysqli_query($conn, "SELECT * FROM conta WHERE telefone = '$telefone'");
     if (mysqli_num_rows($telefone_exists_query) > 0) {
         echo "Já existe uma conta com este número de telefone.";
         exit; // Encerre o script
     }
 
-    $usuario_exists_query = mysqli_query($conexao, "SELECT * FROM conta Where usuario = '$usuario'");
+    $usuario_exists_query = mysqli_query($conn, "SELECT * FROM conta Where usuario = '$usuario'");
     if(mysqli_num_rows($usuario_exists_query) > 0){
         echo "Já existe uma conta com este usuário.";
         exit;
     }
 
     // instrução preparada
-    $query = mysqli_prepare($conexao, "INSERT INTO conta(nome, email, usuario, cpf, telefone, senha) 
+    $query = mysqli_prepare($conn, "INSERT INTO conta(nome, email, usuario, cpf, telefone, senha) 
     VALUES (?, ?, ?, ?, ?, ?)");
 
     // Vinculando os valores às placeholders
@@ -57,7 +57,7 @@ if (
     if ($result) {
         echo "Registro bem-sucedido!";
     } else {
-        echo "Erro ao registrar: " . mysqli_error($conexao);
+        echo "Erro ao registrar: " . mysqli_error($conn);
     }
 
     // Fechando a consulta
@@ -67,5 +67,5 @@ if (
 } 
 
 // Feche a conexão com o banco de dados
-mysqli_close($conexao);
+mysqli_close($conn);
 ?>

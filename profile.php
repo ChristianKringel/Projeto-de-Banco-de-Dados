@@ -1,3 +1,30 @@
+<?php
+session_start();
+include_once("conexao.php");
+include("protect.php");
+
+if (!isset($_SESSION['cpf'])) {
+    die("Você não pode acessar esta página porque não está logado. <p><a href=\"index.html\">Entrar</a></p>");
+}
+
+$cpf_logado = $_SESSION['cpf'];
+
+$sql = "SELECT nome, email, usuario, endereco FROM conta WHERE cpf = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('s', $cpf_logado);
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+if ($result->num_rows === 1) {
+    $userData = $result->fetch_assoc();
+} else {
+    echo "Nenhum resultado encontrado para o CPF do usuário logado.";
+}
+
+$stmt->close();
+$conn->close();
+?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -6,15 +33,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="style.css">
-    <script src="menu.js"></script>
+    <script src="profile.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-    <title>Tela de Navegação</title>
+    <title>PERFIL</title>
 </head>
 
 <body class="main cor-de-fundo" id="main">
-    <h1 class="titulo-principal" id="titulo-principal">Bem-vindo ao nosso aplicativo de streaming de música!</h1>
+    <h1 class="titulo-principal" id="titulo-principal">Bem-vindo ao seu Perfil!</h1>
     <nav class="menu-lateral">
         <div class="btn-expand">
             <i class="bi bi-list" id="btn-exp"></i>
@@ -41,8 +68,8 @@
                     </li>
                     <li class="item-menu">
                         <a href="profile.php">
-                            <span class="icon"> <i class="bi bi-person-fill" id="prof"></i></span>
-                            <span class="txt-link" id="profile">Profile</span>
+                            <span class="icon"> <i class="bi bi-person-fill" id="profile"></i></span>
+                            <span class="txt-link">Profile</span>
                         </a>
                     </li>
                     <li class="item-menu">
@@ -53,6 +80,21 @@
                     </li>
                 </ul>
             </div>
+    </nav>
+
+    <nav class="profile-settings">
+        <div class="user-data">
+            <h1>Perfil do Usuário</h1>
+            <p>Nome: <?php echo $userData['nome']; ?></p>
+            <p>Email: <?php echo $userData['email']; ?></p>
+            <p>Usuário: <?php echo $userData['usuario']; ?></p>
+            <p>Endereço: <?php echo $userData['endereco']; ?></p>
+            </div>
+        </div>
+    </nav>
+            
+
+        </div>
     </nav>
     <!-- </header> -->
     <main>

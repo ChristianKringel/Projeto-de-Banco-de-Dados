@@ -1,21 +1,41 @@
-<?php 
+<?php
     include("conexao.php");
-    include("protect.php");
-    session_start(); 
-    // include("dados.php");
+
+    if(isset($_POST['email']) || isset($_POST['senha'])){
+        if(strlen($_POST['email']) == 0)
+            echo "O email não pode estar vazio \n";
+        if(strlen($_POST['senha']) == 0)
+            echo "A senha não pode estar vazia";
+        else{
+            $email = $conn->real_escape_string($_POST['email']);
+            $senha = $conn->real_escape_string($_POST['senha']);
+    
+            $sql_code = "SELECT * FROM conta WHERE email = '$email' AND senha = '$senha'";
+            $sql_query = $conn->query($sql_code) or die("Falha na execução do código SQL: " . $conn->error);
+    
+            $quantidade = $sql_query->num_rows;
+
+        if($quantidade == 1) {
+            
+            $usuario = $sql_query->fetch_assoc();
+
+            if(!isset($_SESSION)) {
+                session_start();
+            }
+
+            $_SESSION['cpf'] = $usuario['cpf'];
+            $_SESSION['nome'] = $usuario['nome'];
+            header("Location: main.html");
+        } else {
+            echo "Falha ao logar! E-mail ou senha incorretos";
+        }
+    
+        }
+    }
+
 ?> 
 
- <?php
-        if(isset($_SESSION['id']) and (isset($_SESSION['nome']))){
-            echo "Bem vindo " . $_SESSION['nome'] . "<br>";
-            echo "<a href='sair.php'>Sair</a><br>";
-        }else{
-            echo "<div id='dados-usuario'>";
-            echo "<button type='button' class='btn btn-outline-primary' data-bs-toggle='modal' data-bs-target='#loginModal'>Acessar</button>";
-            echo "</div>";
-        }
 
-        ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -31,6 +51,7 @@
     <div class="main-login">
         <div class="login-esquerda">
             <h1>Faça login<br>E venha ouvir muita música!</h1>
+            <form action="" method="POST">
             <img src="animacao.svg" class="login-esquerda-image" alt="animacao-login">
         </div>
         <div class="login-direita">
@@ -53,7 +74,6 @@
             </form>
         </div>
     </div>
-    <script src="teste.js"></script>
 </body>
 
 </html>

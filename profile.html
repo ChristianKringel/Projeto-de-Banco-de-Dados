@@ -56,11 +56,11 @@
 
     <nav class="profile-settings">
         <div class="user-data">
-            <h2>Dados do Usuário</h2>
-            <div class="user-info">
-                <p>Nome: Seu Nome</p>
-                <p>E-mail: seu@email.com</p>
-                <p>Endereço: Seu Endereço</p>
+            <h1>Perfil do Usuário</h1>
+            <p>Nome: <?php echo $userData['nome']; ?></p>
+            <p>Email: <?php echo $userData['email']; ?></p>
+            <p>Usuário: <?php echo $userData['usuario']; ?></p>
+            <p>Endereço: <?php echo $userData['endereco']; ?></p>
             </div>
         </div>
     </nav>

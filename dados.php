@@ -1,6 +1,6 @@
 <?php
 include_once("conexao.php");
-
+session_start();
 // Verificando se os campos do formulário estão definidos antes de acessá-los
 if (
     isset($_POST['nome']) &&
@@ -24,28 +24,30 @@ if (
         exit; // Encerre o script
     }
 
-    // Verifique se já existe um registro com o mesmo CPF
+    // Verifica se já existe uma conta com o mesmo CPF
     $cpf_exists_query = mysqli_query($conn, "SELECT * FROM conta WHERE cpf = '$cpf'");
     if (mysqli_num_rows($cpf_exists_query) > 0) {
         echo "Já existe uma conta com este CPF.";
         exit; // Encerre o script
     }
 
-    // Verifique se já existe um registro com o mesmo telefone
+    // Verifica se já existe alguma conta com este numero de telefone
     $telefone_exists_query = mysqli_query($conn, "SELECT * FROM conta WHERE telefone = '$telefone'");
     if (mysqli_num_rows($telefone_exists_query) > 0) {
         echo "Já existe uma conta com este número de telefone.";
         exit; // Encerre o script
     }
 
+    //Verifica se já existe alguma conta com este usuário
+    /*
     $usuario_exists_query = mysqli_query($conn, "SELECT * FROM conta Where usuario = '$usuario'");
     if(mysqli_num_rows($usuario_exists_query) > 0){
         echo "Já existe uma conta com este usuário.";
         exit;
     }
-
+    */
     // instrução preparada
-    $query = mysqli_prepare($conn, "INSERT INTO conta(nome, email, usuario, cpf, telefone, senha) 
+    $query = mysqli_prepare($conn, "INSERT INTO conta(nome, email, endereco, cpf, telefone, senha) 
     VALUES (?, ?, ?, ?, ?, ?)");
 
     // Vinculando os valores às placeholders
@@ -55,9 +57,21 @@ if (
     $result = mysqli_stmt_execute($query);
 
     if ($result) {
-        echo "Registro bem-sucedido!";
-    } else {
-        echo "Erro ao registrar: " . mysqli_error($conn);
+
+        if ($result) {
+            if(!isset($_SESSION)) {
+                session_start();
+            }
+            $_SESSION['cpf'] = $cpf; 
+            // Mensagem de sucesso
+            echo "Registro bem-sucedido!";
+            // Redirecionamento
+            header("Location: posRegistro.php");
+            exit();
+        } else {
+            // Mensagem de erro
+            echo "Erro ao registrar: " . mysqli_error($conn);
+        }
     }
 
     // Fechando a consulta
@@ -65,6 +79,7 @@ if (
 } else {
     echo "Todos os campos do formulário devem ser preenchidos.";
 } 
+
 
 // Feche a conexão com o banco de dados
 mysqli_close($conn);

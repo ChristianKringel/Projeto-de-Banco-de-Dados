@@ -1,4 +1,5 @@
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,9 +8,10 @@
     <script src="script.js"></script>
     <title>Registro</title>
 </head>
+
 <body>
     <div class="main-login">
-        <div class="login-esquerda"> 
+        <div class="login-esquerda">
             <h1>Crie uma nova conta<br>e comece a curtir música!</h1>
             <img src="animacao.svg" class="login-esquerda-image" alt="animacao-login">
         </div>
@@ -17,38 +19,46 @@
             <div class="card-login">
                 <h1>REGISTRO</h1>
                 <div class="text-fill">
-                     <label for="nome">Nome</label>
-                     <input type="text" name="nome" placeholder="Nome" id="nome">
+                    <label for="nome">Nome</label>
+                    <input type="text" name="nome" placeholder="Nome" id="nome">
                 </div>
                 <div class="text-fill">
                     <label for="email">E-mail</label>
                     <input type="email" name="email" placeholder="E-mail" id="email">
-               </div>
-               <div class="text-fill">
+                </div>
+                <div class="text-fill">
                     <label for="usuario">Usuário</label>
                     <input type="text" name="usuario" placeholder="Usuário" id="usuario">
-               </div>
-               <div class="text-fill">
-                <label for="cpf">CPF</label>
-                <input type="text" name="cpf" placeholder="CPF" id="cpf">
-           </div>
-           <div class="text-fill">
-            <label for="telefone">Telefone</label>
-            <input type="text" name="senha" placeholder="Telefone" id="telefone">
-       </div>
-               <div class="text-fill">
+                </div>
+                <div class="text-fill">
+                    <label for="cpf">CPF</label>
+                    <input type="text" name="cpf" placeholder="CPF" id="cpf">
+                </div>
+                <div class="text-fill">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" name="telefone" placeholder="Telefone" id="telefone">
+                </div>
+                <div class="text-fill">
                     <label for="senha">Senha</label>
                     <input type="password" name="senha" placeholder="Senha" id="senha">
-               </div>
-               <div class="text-fill">
-                <label for="senha">Confirmar Senha</label>
-                <input type="password" name="senha" placeholder="Senha" id="confirmar-senha">
-           </div>
-
-               <button type = "submit" id="register-login" class = "register-login">Registrar</button>
-               <p><span class="conta">Já tem uma conta?</span> <a class="loginLink" href="main.php">Faça login aqui</a></p>
+                </div>
+                <div class="text-fill">
+                    <label for="senha">Confirmar Senha</label>
+                    <input type="password" name="senha" placeholder="Senha" id="confirmar-senha">
+                </div>
+                <div class="text-fill">
+                    <label for="tipoUsuario">Escolha o tipo de usuário:</label><br>
+                    <input type="radio" name="tipoUsuario" id="comum" value="comum"> <label for="comum">Usuário
+                        Comum</label><br>
+                    <input type="radio" name="tipoUsuario" id="criador" value="criador"> <label for="criador">Criador de
+                        Conteúdo</label>
+                </div>
+                <button type="submit" id="register-login" class="register-login">Registrar</button>
+                <p><span class="conta">Já tem uma conta?</span> <a class="loginLink" href="main.php">Faça login aqui</a>
+                </p>
             </div>
         </div>
     </div>
 </body>
+
 </html>

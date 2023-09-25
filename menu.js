@@ -25,3 +25,7 @@ prof.addEventListener('click', function(){
     window.location.href = "profile.html";
 
 })
+
+library.addEventListener('click', function(){
+    window.location.href = "library.php";
+})

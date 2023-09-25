@@ -8,8 +8,10 @@ if (!isset($_SESSION['cpf'])) {
 }
 
 $cpf_logado = $_SESSION['cpf'];
+//$sql = "SELECT nome, email, endereco FROM conta where cpf = ?";
+$sql = "SELECT c.nome, c.email, U.nickname, c.endereco FROM conta c JOIN usuariocomum U on U.cpfcomum = c.cpf WHERE cpf = ? ";
+// SELECT c.nome, c.email, U.nickname, c.endereco FROM conta C JOIN usuarioComum U on U.cpfComum = c.cpf WHERE C.cpf = ;
 
-$sql = "SELECT nome, email, usuario, endereco FROM conta WHERE cpf = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('s', $cpf_logado);
 $stmt->execute();
@@ -33,7 +35,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="style.css">
-    <script src="profile.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
@@ -87,7 +89,7 @@ $conn->close();
             <h1>Perfil do Usuário</h1>
             <p>Nome: <?php echo $userData['nome']; ?></p>
             <p>Email: <?php echo $userData['email']; ?></p>
-            <p>Usuário: <?php echo $userData['usuario']; ?></p>
+            <p>Usuário: <?php echo $userData['nickname']; ?></p>
             <p>Endereço: <?php echo $userData['endereco']; ?></p>
             </div>
         </div>

@@ -5,6 +5,19 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         console.log('Botão de login clicado');
 
+      /*  var escolhaUsuario = document.querySelector('input[name="tipoUsuario"]:checked');
+            if (escolhaUsuario) {
+                var valorEscolhido = escolhaUsuario.value;
+                if (valorEscolhido === "comum") {
+                    alert("Você escolheu ser um Usuário Comum. Execute a ação para Usuário Comum.");
+                    // Aqui você pode adicionar código para ação de Usuário Comum.
+                } else if (valorEscolhido === "criador") {
+                    alert("Você escolheu ser um Criador de Conteúdo. Execute a ação para Criador de Conteúdo.");
+                    // Aqui você pode adicionar código para ação de Criador de Conteúdo.
+                }
+            } else {
+                alert("Por favor, faça uma escolha.");
+            } */
         var email = document.getElementById('email').value;
         var senha = document.getElementById('senha').value;
         console.log('Botão de login clicado 2xx');

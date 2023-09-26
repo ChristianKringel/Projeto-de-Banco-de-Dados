@@ -9,7 +9,7 @@ if (!isset($_SESSION['cpf'])) {
 
 $cpf_logado = $_SESSION['cpf'];
 //$sql = "SELECT nome, email, endereco FROM conta where cpf = ?";
-$sql = "SELECT c.nome, c.email, U.nickname, c.endereco FROM conta c JOIN usuariocomum U on U.cpfcomum = c.cpf WHERE cpf = ? ";
+$sql = "SELECT c.nome, c.email, c.telefone, c.endereco FROM conta c WHERE cpf = ? ";
 // SELECT c.nome, c.email, U.nickname, c.endereco FROM conta C JOIN usuarioComum U on U.cpfComum = c.cpf WHERE C.cpf = ;
 
 $stmt = $conn->prepare($sql);
@@ -25,7 +25,6 @@ if ($result->num_rows === 1) {
 }
 
 $stmt->close();
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -51,19 +50,19 @@ $conn->close();
             <div>
                 <ul>
                     <li class="item-menu">
-                        <a href="main.html">
+                        <a href="principal.php">
                             <span class="icon"> <i class="bi bi-house" id="home"></i></span>
                             <span class="txt-link">Home</span>
                         </a>
                     </li>
                     <li class="item-menu">
-                        <a href="#">
+                        <a href="busca.php">
                             <span class="icon"> <i class="bi bi-search" id="search"></i></span>
                             <span class="txt-link">Search</span>
                         </a>
                     </li>
                     <li class="item-menu">
-                        <a href="#">
+                        <a href="menulibrary.php">
                             <span class="icon"> <i class="bi bi-music-note-list" id="library"></i></span>
                             <span class="txt-link">Library</span>
                         </a>
@@ -89,20 +88,41 @@ $conn->close();
             <h1>Perfil do Usuário</h1>
             <p>Nome: <?php echo $userData['nome']; ?></p>
             <p>Email: <?php echo $userData['email']; ?></p>
-            <p>Usuário: <?php echo $userData['nickname']; ?></p>
+            <p>Usuário: <?php echo $userData['telefone']; ?></p>
             <p>Endereço: <?php echo $userData['endereco']; ?></p>
-            </div>
         </div>
     </nav>
-            
 
-        </div>
-    </nav>
-    <!-- </header> -->
-    <main>
-        <!-- Conteúdo principal da tela de navegação -->
-    </main>
+    <div class="favorites">
+        <h2>Músicas Favoritas</h2>
+        <?php
+        // Consulta para obter todas as músicas que o usuário deu like
+        $query = "SELECT M.titulo AS Título, A.nomeAlbum AS Álbum, CC.nomeArtistico AS Artista
+                  FROM avaliacao AS L
+                  JOIN musica AS M ON L.codigoMusica = M.codigoMusica
+                  JOIN album AS A ON M.codigoAlbum = A.codigoAlbum
+                  JOIN possui AS P ON M.codigoMusica = P.codigoMusica
+                  JOIN codigoArtista AS CA ON P.codigoArtista = CA.NumeroISWC
+                  JOIN criadorConteudo AS CC ON CA.cpf = CC.cpfCriador
+                  WHERE L.cpf = '$cpf_logado'";
+
+        $result = $conn->query($query);
+
+        if ($result && $result->num_rows > 0) {
+            // Exibir a lista de músicas favoritas
+            ?>
+            <ul>
+                <?php while ($row = $result->fetch_assoc()) { ?>
+                    <li>
+                        <?php echo $row['Título'] . ' - ' . $row['Artista'] . ' (' . $row['Álbum'] . ')'; ?>
+                    </li>
+                <?php } ?>
+            </ul>
+            <?php
+        } else {
+            echo "<div class='no-favorites'>Você ainda não deu like em nenhuma música.</div>";
+        }
+        ?>
     </div>
 </body>
-
-</html>
+</html

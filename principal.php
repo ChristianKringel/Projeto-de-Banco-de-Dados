@@ -1,4 +1,6 @@
-
+<?php
+include_once("protect.php");
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -22,19 +24,19 @@
             <div>
                 <ul>
                     <li class="item-menu">
-                        <a href="main.html">
+                        <a href="principal.php">
                             <span class="icon"> <i class="bi bi-house" id="home"></i></span>
                             <span class="txt-link">Home</span>
                         </a>
                     </li>
                     <li class="item-menu">
-                        <a href="#">
+                        <a href="busca.php">
                             <span class="icon"> <i class="bi bi-search" id="search"></i></span>
                             <span class="txt-link">Search</span>
                         </a>
                     </li>
                     <li class="item-menu">
-                        <a href="#">
+                        <a href="menulibrary.php">
                             <span class="icon"> <i class="bi bi-music-note-list" id="library"></i></span>
                             <span class="txt-link">Library</span>
                         </a>
@@ -43,6 +45,7 @@
                         <a href="profile.php">
                             <span class="icon"> <i class="bi bi-person-fill" id="prof"></i></span>
                             <span class="txt-link" id="profile">Profile</span>
+
                         </a>
                     </li>
                     <li class="item-menu">
@@ -54,6 +57,9 @@
                 </ul>
             </div>
     </nav>
+    <div class="imagem-principal">
+        <img src="animacaoPrincipal.svg" class="principalImagen" alt="principalImagen">
+    </div>
     <!-- </header> -->
     <main>
         <!-- Conteúdo principal da tela de navegação -->

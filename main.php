@@ -25,7 +25,7 @@
 
             $_SESSION['cpf'] = $usuario['cpf'];
             $_SESSION['nome'] = $usuario['nome'];
-            header("Location: main.html");
+            header("Location: principal.php");
         } else {
             echo "Falha ao logar! E-mail ou senha incorretos";
         }
@@ -52,7 +52,7 @@
         <div class="login-esquerda">
             <h1>Faça login<br>E venha ouvir muita música!</h1>
             <form action="" method="POST">
-            <img src="animacao.svg" class="login-esquerda-image" alt="animacao-login">
+            <img src="music-animate" class="login-esquerda-image" alt="animacao-login">
         </div>
         <div class="login-direita">
             <div class="card-login">

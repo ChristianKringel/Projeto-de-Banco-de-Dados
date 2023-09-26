@@ -32,3 +32,29 @@ buttonLogin.addEventListener('click', async (e) => {
         }
     }
 });
+
+
+<script>
+// Função para lidar com o clique no botão "Like"
+$(document).on("click", "a.like-button", function (e) {
+    e.preventDefault(); // Impede o comportamento padrão do link
+
+    // Obtém o código da música a partir do atributo data
+    var codigoMusica = $(this).data("codigo-musica");
+
+    // Faça uma solicitação AJAX para adicionar um "like"
+    $.ajax({
+        url: "seu_script_php.php?like=" + codigoMusica, // Substitua pelo URL do seu script PHP
+        method: "GET",
+        success: function (response) {
+            // Atualize a exibição de "likes" na página
+            // Você pode atualizar a contagem de "likes" ou mostrar uma mensagem de sucesso aqui
+            console.log("Like adicionado com sucesso!");
+        },
+        error: function (xhr, status, error) {
+            // Lida com erros de solicitação, se houver algum
+            console.error("Erro ao adicionar like: " + error);
+        }
+    });
+});
+</script>

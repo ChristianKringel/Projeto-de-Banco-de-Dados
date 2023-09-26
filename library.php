@@ -6,69 +6,77 @@ $cpf_logado = intval($_SESSION['cpf']);
 // Verificando se os campos do formulário estão definidos antes de acessá-los
 if (
     isset($_POST['titulo']) &&
-    isset($_POST['duracao'])
+    isset($_POST['duracao']) &&
+    isset($_POST['codigoAlbum'])
 ) {
-    if (isset($_POST['codigoAlbum']) && $_POST['codigoAlbum'] !== '') {
-        $codigoAlbum = addslashes($_POST['codigoAlbum']);
-    } else {
-        $codigoAlbum = null; // Defina como nulo se não foi enviado
-    }
-
-    // Obtendo os valores dos campos enviados pelo JavaScript
     $titulo = addslashes($_POST['titulo']);
     $duracao = addslashes($_POST['duracao']);
-    // $codigoAlbum = addslashes($_POST['codigoAlbum']);
-
-    // Verifique se os dados estão sendo recebidos
-    echo "titulo Artístico: " . $titulo . "<br>";
-    echo "Descrição: " . $duracao . "<br>";
-    echo "codigoAlbum: " . $codigoAlbum . "<br>";
+    $codigoAlbum = addslashes($_POST['codigoAlbum']);
 
     // Verifique se o álbum existe no banco de dados
-    $query = mysqli_prepare($conn, "SELECT * FROM album WHERE codigoAlbum = ?");
-    mysqli_stmt_bind_param($query, "i", $codigoAlbum);
-    mysqli_stmt_execute($query);
-    $result = mysqli_stmt_get_result($query);
+    $consultaAlbum = mysqli_prepare($conn, "SELECT * FROM album WHERE codigoAlbum = ?");
+    mysqli_stmt_bind_param($consultaAlbum, "i", $codigoAlbum);
+    mysqli_stmt_execute($consultaAlbum);
+    $resultadoAlbum = mysqli_stmt_get_result($consultaAlbum);
 
-
-    if (mysqli_num_rows($result) == 0) {
-        // O álbum não existe, exiba um alerta
+    if (mysqli_num_rows($resultadoAlbum) == 0) {
+        // O álbum não existe, exiba uma mensagem de erro
         echo "Álbum com o número $codigoAlbum não encontrado. Por favor, verifique o número do álbum.";
     } else {
-        // Preparar a consulta SQL corretamente
-        $query = mysqli_prepare($conn, "INSERT INTO musica ( titulo, duracao, codigoAlbum) VALUES (?, ?, ?)");
-        $codArt = mysqli_prepare($conn, "SELECT codigoArtista from Artista A JOIN codigoartista CA on CA.numeroISWC = A.numeroISWC WHERE CA.cpf = 'cpf' ");
-        $codigoMusica = mysqli_insert_id($conn);
-        $resultado = mysqli_query($conn, $cod);
-        if ($resultado) {
-            $linha = mysqli_fetch_assoc($resultado);
-            $codigoArtista = $linha['codigoArtista'];
-        }
-        $query2 = myslqi_prepare($conn, "INSERT INTO possui(codigoArtista, codigoMusica) VALUES (?, ?)");
-        mysqli_stmt_bind_param($query2, "ii", $codigoArtista, $codigoMusica);
-        mysqli_stmt_execute($query2);
-        
-        // Verifique se a preparação da consulta foi bem-sucedida
-        if ($query) {
-            // Vinculando os valores às placeholders
-            mysqli_stmt_bind_param($query, "sdi", $titulo, $duracao, $codigoAlbum);
+        // O álbum existe, continue com a inserção da música
 
-            // Executando a consulta preparada
-            if (mysqli_stmt_execute($query)) {
-                echo "Registro bem-sucedido!";
-            } else {
-                echo "Erro ao registrar: " . mysqli_error($conn);
+        // Preparar a consulta SQL para inserção da música
+        $queryMusica = mysqli_prepare($conn, "INSERT INTO musica (titulo, duracao, codigoAlbum) VALUES (?, ?, ?)");
+        mysqli_stmt_bind_param($queryMusica, "ssd", $titulo, $duracao, $codigoAlbum);
+
+        // Executar a consulta para inserir a música
+        if (mysqli_stmt_execute($queryMusica)) {
+            // A inserção da música foi bem-sucedida
+            $codigoMusica = mysqli_insert_id($conn);
+
+            // Obtém o código da música recém-inserido
+            $codigoArtista = null; // Inicialize com null para evitar problemas
+            $codigoArtistaQuery = mysqli_prepare($conn, "SELECT codigoArtista FROM artista A JOIN codigoArtista CA on CA.numeroISWC = A.numeroISWC WHERE CA.cpf = ? ");
+            mysqli_stmt_bind_param($codigoArtistaQuery, "s", $cpf_logado);
+            mysqli_stmt_execute($codigoArtistaQuery);
+            $result2 = mysqli_stmt_get_result($codigoArtistaQuery);
+
+            if ($row2 = mysqli_fetch_assoc($result2)) {
+                $codigoArtista = $row2['codigoArtista'];
             }
 
+            // Verifique se o código do artista foi obtido com sucesso
+            if ($codigoArtista !== null) {
+                // Insira a relação entre o código do artista e o código da música
+                $queryRelacao = mysqli_prepare($conn, "INSERT INTO possui (codigoArtista, codigoMusica) VALUES (?, ?)");
+                mysqli_stmt_bind_param($queryRelacao, "ii", $codigoArtista, $codigoMusica);
 
-            // Fechar a consulta    
-            mysqli_stmt_close($query);
+                if (mysqli_stmt_execute($queryRelacao)) {
+                    echo "Registro bem-sucedido!";
+                } else {
+                    echo "Erro ao registrar a relação: " . mysqli_error($conn);
+                }
+            } else {
+                // Código do artista não encontrado, trate o erro aqui
+                echo "Erro: Código do artista não encontrado.";
+            }
+
+            // Fechar a consulta de relação
+            mysqli_stmt_close($queryRelacao);
         } else {
-            echo "Erro na preparação da consulta: " . mysqli_error($conn);
+            // Erro na inserção da música
+            echo "Erro ao registrar a música: " . mysqli_error($conn);
         }
+
+        // Fechar a consulta da música
+        mysqli_stmt_close($queryMusica);
     }
+
+    // Fechar a consulta do álbum
+    mysqli_stmt_close($consultaAlbum);
 }
 ?>
+
 <html lang="pt-br">
 
 <head>
@@ -83,8 +91,8 @@ if (
 <body>
     <div class="main-login">
         <div class="login-esquerda">
-            <h1>Registre sua<br>e comece a fazer sucesso!</h1>
-            <img src="animacao.svg" class="login-esquerda-image" alt="animacao-login">
+            <h1>Registre sua música<br>e comece a fazer sucesso!</h1>
+            <img src="jazz-trumpet-animate" class="login-esquerda-image" alt="animacao-login">
         </div>
         <div class="login-direita">
             <div class="card-login">
@@ -103,7 +111,8 @@ if (
                         id="codigoAlbum">
                 </div>
                 <button type="submit" id="register-login" class="register-login">Registrar</button>
-                <p><span class="conta">Deseja voltar para o menu?</span> <a class="loginLink" href="main.html">Clique aqui</a>
+                <p><span class="conta">Deseja voltar para o menu?</span> <a class="loginLink" href="principal.php">Clique
+                        aqui</a>
                 </p>
             </div>
         </div>

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (xhr.status === 200) {
                 console.log('Resposta do servidor:', xhr.responseText);
                 // Aqui você pode atualizar a página ou tomar outras ações com base na resposta do servidor
-                window.location.href = "library.php";
+                //window.location.href = "library.php";
             }
         };
 
